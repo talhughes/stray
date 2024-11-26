@@ -1,6 +1,15 @@
 namespace SpriteKind {
     export const cat = SpriteKind.create()
 }
+function hurtCat () {
+    sprites.destroy(catFood)
+    info.setLife(3)
+    while (info.life() == 3) {
+        info.changeLifeBy(-1)
+    }
+    pause(2000)
+    game.splash("Oh no! " + name + " is injured!")
+}
 function nameCat () {
     name = game.askForString("What's her name?")
     game.splash("Awesome! " + name + " fits her perfectly!")
@@ -141,16 +150,26 @@ function feedCat (food: string) {
     game.showLongText("The cat is hungry! Would you like to feed her?", DialogLayout.Bottom)
     answer2 = game.askForString("Type yes or no!")
 }
+function catSpeaks () {
+    return "Help me!"
+}
+function healCat () {
+    if (injuredCat == "yes") {
+        info.changeLifeBy(1)
+        pause(1000)
+    }
+}
 function catOnScreen () {
     if (answer2 == "yes") {
         strayCat = sprites.create(assets.image`stray cat`, SpriteKind.cat)
-        dookiefood = sprites.create(assets.image`catTreat`, SpriteKind.Food)
-        dookiefood.setPosition(57, 68)
+        catFood = sprites.create(assets.image`catTreat`, SpriteKind.Food)
+        catFood.setPosition(57, 68)
     }
 }
-let dookiefood: Sprite = null
 let answer2 = ""
 let name = ""
+let catFood: Sprite = null
+let injuredCat = ""
 let answer = ""
 let strayCat: Sprite = null
 game.setDialogFrame(img`
@@ -360,3 +379,69 @@ helpCat()
 nameCat()
 feedCat("woah")
 catOnScreen()
+strayCat.sayText("Meow...")
+hurtCat()
+pause(800)
+let returnedValue = catSpeaks()
+strayCat.sayText(returnedValue)
+pause(1000)
+game.showLongText("Will you help her?", DialogLayout.Bottom)
+healCat()
+injuredCat = game.askForString("Type yes or no!")
+strayCat.sayText("Meow!")
+info.setLife(3)
+game.showLongText("Awesome! You healed her!", DialogLayout.Bottom)
+pause(1000)
+game.setDialogFrame(img`
+    999999999999999999999999999999999999999999999999
+    999999999999999999999999999999999999999999999999
+    999911119999119991111999111199999999119999999999
+    999111111191111911111191111119911191111991111999
+    999111111111111111111111111111111111111911111199
+    999111111111111111111111111111111111111111111199
+    999111111111111111111111111111111111111111111199
+    999911111111111111111111111111111111111111111199
+    999991111111111111111111111111111111111111111999
+    999111111111111111111111111111111111111111111999
+    991111111111111111111111111111111111111111119999
+    991111111111111111111111111111111111111111111999
+    999111111111111111111111111111111111111111111199
+    999911111111111111111111111111111111111111111199
+    999111111111111111111111111111111111111111111999
+    999111111111111111111111111111111111111111119999
+    999111111111111111111111111111111111111111111999
+    999911111111111111111111111111111111111111111199
+    999911111111111111111111111111111111111111111199
+    999111111111111111111111111111111111111111111199
+    991111111111111111111111111111111111111111111199
+    991111111111111111111111111111111111111111111999
+    991111111111111111111111111111111111111111119999
+    991111111111111111111111111111111111111111111999
+    999111111111111111111111111111111111111111111199
+    999911111111111111111111111111111111111111111199
+    999111111111111111111111111111111111111111111199
+    991111111111111111111111111111111111111111111199
+    991111111111111111111111111111111111111111111999
+    991111111111111111111111111111111111111111119999
+    991111111111111111111111111111111111111111119999
+    999111111111111111111111111111111111111111111999
+    99d1111111111111111111111111111111111dd111111199
+    9ddd111111111111111111111111111111111dd111111199
+    9ddd1111111111dd111111111111111111111dd1111dd199
+    9d1d111111111ddddd11111111111ddddd111ddd111ddd99
+    9ddd111ddd111d111d1111ddddd11d111d11dddd111ddd99
+    9d1d11ddddd11ddddd1111ddddd11ddddd11d1dd111ddd99
+    9ddd11d1d1d11d111d1dd1d1ddd11d111d11dddddddddd99
+    9d1d11ddddd11ddddd1dd1ddd1d11ddddddddd1ddd111ddd
+    dddd11d1d1d11d111d1dd1ddddd11d111ddddddddddddddd
+    dd1d1ddddddddddddd1dd1d1ddddddddddddd1dddd111ddd
+    dddd1dd1d1dddd111dddddddd1dddd111ddddddddddddddd
+    dd1d1ddddddddddddddddddddddddddddddddd1ddd111ddd
+    ddddddddddddddddddddddd1dddddddddddddddddddddddd
+    ddddddddddddddddddddddddd1ddddddddddd1dddd111ddd
+    .dddddddddddddddddddddddddddddddddddddddddddddd.
+    ..dddddddddddddddddddddddddddddddddddddddddddd..
+    `)
+game.showLongText("That's all for now, Thanks for playing Stray!", DialogLayout.Center)
+game.gameOver(true)
+effects.confetti.endScreenEffect()
